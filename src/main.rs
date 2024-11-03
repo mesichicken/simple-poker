@@ -28,6 +28,18 @@ fn main() {
     let mut rng = rand::thread_rng();
     deck.shuffle(&mut rng);
 
-    println!("{:?}", deck);
+    let mut hand: Vec<Card> = Vec::new();
+    // 5枚カードを引く
+    for _ in 0..5 {
+        hand.push(deck.pop().unwrap());
+    }
+
+    // 手札をソート
+    hand.sort_by(|a, b| a.rank.cmp(&b.rank));
+
+    println!("---Hand---");
+    for (i, card) in hand.iter().enumerate() {
+        println!("{:}: {:?} {:}", i + 1, card.suit, card.rank);
+    }
 
 }
