@@ -42,4 +42,25 @@ fn main() {
         println!("{:}: {:?} {:}", i + 1, card.suit, card.rank);
     }
 
+    println!("入れ替えたいカードの番号を入力してください(例: 1 2 3)");
+
+    let mut input = String::new();
+
+    std::io::stdin().read_line(&mut input).unwrap();
+
+    let numbers: Vec<usize> = input
+        .split_whitespace()
+        .map(|x| x.parse().unwrap()) // 文字列を数値に変換する
+        .collect::<Vec<usize>>();  // Vecに変換する
+
+    for number in numbers {
+        hand[number - 1] = deck.pop().unwrap();
+    }
+
+    hand.sort_by(|a, b| a.rank.cmp(&b.rank));
+
+    println!("---Hand---");
+    for (i, card) in hand.iter().enumerate() {
+        println!("{:}: {:?} {:}", i + 1, card.suit, card.rank);
+    }
 }
