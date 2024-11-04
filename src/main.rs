@@ -1,4 +1,5 @@
 use rand::seq::SliceRandom;
+use std::collections::HashMap;
 use std::io;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -54,6 +55,39 @@ fn replace_cards(hand: &mut Vec<Card>, deck: &mut Vec<Card>, indices: &[usize]) 
     hand.sort_by_key(|card| card.rank);
 }
 
+fn check_flush(hand: &[Card]) -> bool {
+    let suit = hand.first().unwrap().suit;
+    hand.iter().all(|card| card.suit == suit)
+}
+
+fn check_pairs(hand: &[Card]) -> HashMap<i32, usize> {
+    let mut rank_count = HashMap::new();
+    for card in hand {
+        *rank_count.entry(card.rank).or_insert(0) += 1;
+    }
+    rank_count
+}
+
+fn evaluate_hand(hand: &[Card]) {
+    if check_flush(hand) {
+        println!("フラッシュ!");
+        return;
+    }
+
+    let rank_count = check_pairs(hand);
+    let pair_counts: Vec<usize> = rank_count.values().cloned().collect();
+
+    if pair_counts.contains(&3) {
+        println!("スリーカード!");
+    } else if pair_counts.iter().filter(|&&x| x == 2).count() == 2 {
+        println!("2ペア!");
+    } else if pair_counts.contains(&2) {
+        println!("1ペア!");
+    } else {
+        println!("役なし...");
+    }
+}
+
 fn main() {
     let mut deck = build_deck();
 
@@ -82,4 +116,7 @@ fn main() {
     replace_cards(&mut hand, &mut deck, &indices);
 
     print_hand(&hand, "Final Hand");
+
+    // 手札の評価
+    evaluate_hand(&hand);
 }
